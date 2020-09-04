@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 /**
  * Single Linked list implementation with numerous
- * operations - testing purposes
- * labgeek@gmail.com
+ * operations.
  */
 typedef struct Node {
 	int data;
@@ -22,7 +22,7 @@ typedef struct {
  */
 
 void initList(LinkedList*);
-void createList(LinkedList*);
+void createListRandomNumbers(LinkedList*);
 void insertAtHead(LinkedList*, int);
 void insertAtTail(LinkedList*, int);
 void printListDetail(LinkedList*);
@@ -32,21 +32,23 @@ void deleteFirst(LinkedList*);
 void deleteLast(LinkedList*);
 void deleteTarget(LinkedList*, int);
 void reverse(LinkedList*);
+int loadFromFile(LinkedList*, char*);
 
 void menu() {
 	printf("    Singly Linked list Operations\n");
 	printf("----------------------------------\n");
 	printf("1.  Load from file\n");
-	printf("2.  Insert at head\n");
-	printf("3.  Insert at tail\n");
-	printf("4.  Print list (detail)\n");
-	printf("5.  Print list (Data)\n");
-	printf("6.  Find\n");
-	printf("7.  Delete First\n");
-	printf("8.  Delete Last Node\n");
-	printf("9.  Delete target node\n");
-	printf("10. Reverse linked list\n");
-	printf("11. Quit\n");
+	printf("2.  Create list with Random Numbers\n");
+	printf("3.  Insert at head\n");
+	printf("4.  Insert at tail\n");
+	printf("5.  Print list (detail)\n");
+	printf("6.  Print list (Data)\n");
+	printf("7.  Find\n");
+	printf("8.  Delete First\n");
+	printf("9.  Delete Last Node\n");
+	printf("10.  Delete target node\n");
+	printf("11. Reverse linked list\n");
+	printf("12. Quit\n");
 	return;
 }
 /**
@@ -154,12 +156,51 @@ void printListDetail(LinkedList* listptr) { //print node data, address of each n
 
 }
 
+//linear searching
+Node * find(LinkedList* listptr, int target) {
+	Node* current = listptr->head; //gets address of current head address
 
+	while (current != NULL) {
+		if (current->data == target) {
+			break;
+		}
+		current = current->next;
+	}
+	return current; //if nothing, would return NULL
+
+}
+
+int loadFromFile(LinkedList* listptr, char* filename) {
+	FILE* inputfile = fopen(filename, "r");
+	if (inputfile == NULL)
+		return 0;
+	int data;
+	fscanf(inputfile, "%d", &data);
+	while (!feof(inputfile)) { //true if feof entered
+		insertAtTail(listptr, data);
+		fscanf(inputfile, "%d", &data);
+	}
+
+	fclose(inputfile);
+	return 1;
+
+}
+
+
+void createListRandomNumbers(LinkedList* listptr, int n)
+{
+	int i;
+	srand(time(NULL));
+	for (i = 1; i <= n; ++i) {
+		int k = rand() % 1000;
+		insertAtTail(listptr, k);
+	}
+}
 int main()
 {
 	LinkedList list;
 	initList(&list);
-	int choice, data;
+	int choice, data, success, n;
 	menu();
 	int quit = 0;
 	while (!quit) {
@@ -168,27 +209,36 @@ int main()
 
 		switch (choice) {
 		case 1: 
-			printf("Not implemented yet\n");
+			success = loadFromFile(&list, "testfile.txt");
+			if (success == 1)
+				printf("File has been loaded!!\n");
+			else
+				printf("Failed to open\n");
 			break;
+
 		case 2:
+			printf("Number of random number to be added to linked list: ");
+			scanf("%d", &n);
+			createListRandomNumbers(&list, n);
+			break;
+
+		case 3:
 			//ask for input
 			printf("Input data to insert at head (first node): ");
 			scanf("%d", &data);
 			insertAtHead(&list, data);
 
 			break;
-		case 3:
+		case 4:
 			printf("Input data to insert at Tail (last node): ");
 			scanf("%d", &data);
 			insertAtTail(&list, data);
 			break;
-		case 4:
+		case 5:
 			printListDetail(&list);
 			break;
-		case 5:
+		case 6:
 			printList(&list);
-			break;
-		case 6:printf("Not implemented yet\n");
 			break;
 		case 7:printf("Not implemented yet\n");
 			break;
@@ -200,6 +250,11 @@ int main()
 			break;
 		case 11:printf("Not implemented yet\n");
 			break;
+		case 12:printf("Not implemented yet\n");
+			quit = 1;
+			break;
+		default:
+			printf("Invalid option chosen, valid option is from 1-11\n");
 		}
 
 	}
