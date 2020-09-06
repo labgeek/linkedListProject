@@ -1,20 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <time.h>		//required for srand()
 
 /**
  * Single Linked list implementation with numerous
  * operations.
+ * author:  labgeek@gmail.com
+ * date:  9/4/2020
  */
 typedef struct Node {
-	int data;
-	struct Node* next;
+	int data;			//for storing the data held in the linked list node
+	struct Node* next;	//for storing the address of the immediate next node
 }Node;
 
 typedef struct {
-	struct Node* head;
-	struct Node* tail;
-	int nodeCount;
+	struct Node* head;	//address of the first node (NULL to start)
+	struct Node* tail;	//address of the last node (NULL to start)
+	int nodeCount;		//count of the total number of nodes
 } LinkedList;
 
 /**
