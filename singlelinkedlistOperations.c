@@ -28,8 +28,8 @@ void insertAtTail(LinkedList*, int);
 void printListDetail(LinkedList*);
 void printList(LinkedList*);
 Node * find(LinkedList*, int);
-void deleteFirst(LinkedList*);
-void deleteLast(LinkedList*);
+int deleteFirst(LinkedList*);
+int deleteLast(LinkedList*);
 void deleteTarget(LinkedList*, int);
 void reverse(LinkedList*);
 int loadFromFile(LinkedList*, char*);
@@ -42,7 +42,7 @@ void menu() {
 	printf("3.  Insert at head\n");
 	printf("4.  Insert at tail\n");
 	printf("5.  Print list (detail)\n");
-	printf("6.  Print list (Data)\n");
+	printf("6.  Print list (Data only)\n");
 	printf("7.  Find\n");
 	printf("8.  Delete First\n");
 	printf("9.  Delete Last Node\n");
@@ -196,6 +196,63 @@ void createListRandomNumbers(LinkedList* listptr, int n)
 		insertAtTail(listptr, k);
 	}
 }
+
+int deleteFirst(LinkedList* listptr) {
+	if (listptr->nodeCount == 0) {
+		return -99;
+	}
+	
+	Node* first = listptr->head;
+	int data = first->data;
+	if (listptr->nodeCount == 1) {
+		//there is only one node
+		listptr->head = NULL;
+		listptr->tail = NULL;
+	}
+	else {
+		listptr->head = first->next;
+	}
+	free(first);
+	listptr->nodeCount--;
+	return data;
+}
+
+
+int deleteLast(LinkedList* listptr) {
+	if (listptr->nodeCount == 0) {
+		return -99;
+	}
+
+	/* Assign current address of current ptr to head */
+	Node* current = listptr->head;
+	//Access last node ptr
+	Node* last = listptr->tail;
+	int data = last->data;
+
+	if (listptr->nodeCount == 1) {
+		/* If there is only one node, the we need to delete that node
+		so we must assign NULL to both head and tail pointer, as the linked list
+		would be empty after this operation */
+		listptr->head = NULL;
+		listptr->tail = NULL;
+	}
+	/* If there are many nodes in linked list, we need
+	to search for the second to last node and assign
+	that one to tail*/
+	else {
+		/* as long as we don't get address of last tail node. iterate through */
+		while (current->next != listptr->tail) {
+			current = current->next;
+		}
+		/* update tail pointer */
+		listptr->tail = current;
+		listptr->tail->next = NULL;
+	}
+	free(last);
+	listptr->nodeCount--;
+	return data;
+
+}
 int main()
 {
 	LinkedList list;
@@ -242,9 +299,19 @@ int main()
 			break;
 		case 7:printf("Not implemented yet\n");
 			break;
-		case 8:printf("Not implemented yet\n");
+		case 8:
+			data = deleteFirst(&list);
+			if (data == -99)
+				printf("Linked list is empty\n");
+			else
+				printf("First node has been deleted, data:  %d\n", data);
 			break;
-		case 9:printf("Not implemented yet\n");
+		case 9:
+			data = deleteLast(&list);
+			if (data == -99)
+				printf("Linked list is empty\n");
+			else
+				printf("First node has been deleted, data:  %d\n", data);
 			break;
 		case 10:printf("Not implemented yet\n");
 			break;
