@@ -27,10 +27,10 @@ void insertAtHead(LinkedList*, int);
 void insertAtTail(LinkedList*, int);
 void printListDetail(LinkedList*);
 void printList(LinkedList*);
-Node * find(LinkedList*, int);
+Node * find(LinkedList*, int, Node **);
 int deleteFirst(LinkedList*);
 int deleteLast(LinkedList*);
-void deleteTarget(LinkedList*, int);
+int deleteTarget(LinkedList*, int);
 void reverse(LinkedList*);
 int loadFromFile(LinkedList*, char*);
 
@@ -157,13 +157,15 @@ void printListDetail(LinkedList* listptr) { //print node data, address of each n
 }
 
 //linear searching
-Node * find(LinkedList* listptr, int target) {
+Node * find(LinkedList* listptr, int target, Node **prvPtr) {
+	
 	Node* current = listptr->head; //gets address of current head address
-
+	*prvPtr = NULL;
 	while (current != NULL) {
 		if (current->data == target) {
 			break;
 		}
+		*prvPtr = current;
 		current = current->next;
 	}
 	return current; //if nothing, would return NULL
@@ -251,15 +253,38 @@ int deleteLast(LinkedList* listptr) {
 	free(last);
 	listptr->nodeCount--;
 	return data;
-
 }
+
+int deleteTarget(LinkedList* listptr, int target) {
+	Node* current = NULL, * prev = NULL;
+	current = find(listptr, target, &prev);
+	if (current == NULL)
+		return -99;
+
+	int data = current->data;
+	if (current == listptr->head)
+		return deleteFirst(listptr);
+
+	else if (current == listptr->tail)
+		return deleteLast(listptr);
+
+	else {
+		prev->next = current->next;
+		free(current);
+		listptr->nodeCount--;
+		return data;
+	}
+}
+
+
 int main()
 {
 	LinkedList list;
 	initList(&list);
-	int choice, data, success, n;
+	int choice, data, success, n, target;
 	menu();
 	int quit = 0;
+	Node* current = NULL, *prev = NULL;
 	while (!quit) {
 		printf("Please enter your choice: ");
 		scanf("%d", &choice);
@@ -297,7 +322,14 @@ int main()
 		case 6:
 			printList(&list);
 			break;
-		case 7:printf("Not implemented yet\n");
+		case 7:
+			printf("Enter target to find: ");
+			scanf("%d", &data);
+			current = find(&list, data, &prev);
+			if (current == NULL)
+				printf("Target not found in the Linked List\n");
+			else
+				printf("Target exists, address of the target node: %p, previous: %p", current, prev);
 			break;
 		case 8:
 			data = deleteFirst(&list);
@@ -313,7 +345,14 @@ int main()
 			else
 				printf("First node has been deleted, data:  %d\n", data);
 			break;
-		case 10:printf("Not implemented yet\n");
+		case 10:
+			printf("Enter target to find: ");
+			scanf("%d", &target);
+			data = deleteTarget(&list, target);
+			if (data == -99)
+				printf("Target %d does not exist in the list\n", target);
+			else
+				printf("Target node with data %d, deleted successfully\n", data);
 			break;
 		case 11:printf("Not implemented yet\n");
 			break;
@@ -329,3 +368,4 @@ int main()
 
 	return 0;
 }
+
