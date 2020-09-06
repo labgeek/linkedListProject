@@ -276,6 +276,31 @@ int deleteTarget(LinkedList* listptr, int target) {
 	}
 }
 
+void reverse(LinkedList* listptr) {
+	if (listptr->nodeCount <= 1) {
+		return;
+	}
+
+	Node* p, * q, * r;
+	q = NULL;
+	p = listptr->head;
+	r = p->next;
+	while (1) {
+		//reverse the linked list here
+		p->next = q;
+		if (p == listptr->tail) {
+			break;
+		}
+		//shift the pointers toward the right
+		q = p;
+		p = r;
+		r = r->next;
+	}
+	//swap the head and tail address
+	listptr->tail = listptr->head;
+	listptr->head = p;
+}
+
 
 int main()
 {
@@ -354,7 +379,8 @@ int main()
 			else
 				printf("Target node with data %d, deleted successfully\n", data);
 			break;
-		case 11:printf("Not implemented yet\n");
+		case 11:
+			reverse(&list); //pass in list object
 			break;
 		case 12:printf("Not implemented yet\n");
 			quit = 1;
@@ -364,8 +390,5 @@ int main()
 		}
 
 	}
-
-
 	return 0;
 }
-
