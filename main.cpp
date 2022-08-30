@@ -4,7 +4,9 @@
 #include <ctime>   // for time()
 using namespace std;
 
-
+/*
+simple node adding to linked list
+*/
 int main()
 {
 	List link;
